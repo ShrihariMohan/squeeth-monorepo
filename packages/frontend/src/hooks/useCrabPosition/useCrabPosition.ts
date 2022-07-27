@@ -131,13 +131,16 @@ export const useCrabPositionV2 = (user: string) => {
           acc.depositedEth = acc.depositedEth.plus(tx.ethAmount)
           acc.lpAmount = acc.lpAmount.plus(tx.lpAmount)
           acc.usdAmount = acc.usdAmount.plus(tx.ethUsdValue)
+          console.log("ADD", tx.lpAmount.toString())
         } else if (tx.type === CrabStrategyV2TxType.FLASH_WITHDRAW || tx.type === CrabStrategyV2TxType.WITHDRAW) {
           acc.depositedEth = acc.depositedEth.minus(tx.ethAmount)
           acc.lpAmount = acc.lpAmount.minus(tx.lpAmount)
           acc.usdAmount = acc.usdAmount.minus(tx.ethUsdValue)
+          console.log("SUB", tx.lpAmount.toString())
         }
         // Reset to zero if position closed
         if (acc.lpAmount.isZero()) {
+          console.log("is reset: RESET")
           acc.depositedEth = BIG_ZERO
           acc.usdAmount = BIG_ZERO
         }

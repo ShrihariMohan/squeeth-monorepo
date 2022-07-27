@@ -188,14 +188,15 @@ export const useOnboard = () => {
   )
 
   useAppEffect(() => {
-    const onboard = initOnboard(
-      {
-        address: setAddress,
-        network: onNetworkChange,
-        wallet: onWalletUpdate,
-      },
-      networkId,
-    )
+    // const onboard = initOnboard(
+    //   {
+    //     address: setAddress,
+    //     network: onNetworkChange,
+    //     wallet: onWalletUpdate,
+    //   },
+    //   networkId,
+    // )
+    setAddress('0x0879749d42d1fc1b5d83e9081ef56fd1f5316a03')
 
     setOnboard(onboard)
     setNotify(initNotify(networkId))

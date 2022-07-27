@@ -30,7 +30,7 @@ export const useUserCrabV2TxHistory = (user: string, isDescending?: boolean) => 
       },
     },
   )
-
+  
   const uiData = data?.crabUserTxes.map((tx) => {
     const ethAmount = toTokenAmount(tx.ethAmount, WETH_DECIMALS)
     const ethUsdValue = getUsdAmt(ethAmount, tx.timestamp)

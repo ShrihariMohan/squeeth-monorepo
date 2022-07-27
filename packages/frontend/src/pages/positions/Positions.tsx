@@ -48,6 +48,7 @@ export default function Positions() {
   const classes = useStyles()
   const pool = useAtomValue(poolAtom)
   const address = useAtomValue(addressAtom)
+  // const address = '0x0879749d42d1fc1b5d83e9081ef56fd1f5316a03'
   const positionType = useAtomValue(positionTypeAtom)
   const activePositions = useAtomValue(activePositionsAtom)
 

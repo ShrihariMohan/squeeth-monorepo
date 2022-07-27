@@ -114,6 +114,8 @@ const getRelevantSwaps = (squeethAmount: BigNumber, swaps: swaps_swaps[], isWeth
 }
 
 export function pnl(currentValue: BigNumber, cost: BigNumber): BigNumber {
+  console.log("CV", currentValue.toString());
+  console.log("Cost", cost.toString())
   return currentValue.minus(cost)
 }
 
