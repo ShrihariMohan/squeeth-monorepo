@@ -18,6 +18,8 @@ import './tasks/addSqueethLiquidity'
 import './tasks/addWethLiquidity'
 import './tasks/buySqueeth'
 import './tasks/buyWeth'
+import './tasks/sellWeth'
+import './tasks/sellSqueeth'
 import './tasks/increaseSlot'
 
 // Load env variables
@@ -62,6 +64,8 @@ const UNISWAP_SETTING = {
   },
 };
 
+const accounts = process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : { mnemonic: mnemonic() }
+
 const config: HardhatUserConfig = {
   defaultNetwork,
   networks: {
@@ -89,50 +93,40 @@ const config: HardhatUserConfig = {
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${InfuraKey}`, // <---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
+    },
+    goerli: {
+      url: `https://goerli.infura.io/v3/${InfuraKey}`, // <---- YOUR INFURA ID! (or it won't work)
+      accounts,
     },
     kovan: {
       url: `https://kovan.infura.io/v3/${InfuraKey}`, // <---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${InfuraKey}`, // <---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
     },
     ropsten: {
       url: `https://ropsten.infura.io/v3/${InfuraKey}`, // <---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
       gas: 8000000000000000
     },
     xdai: {
       url: "https://rpc.xdaichain.com/",
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
     },
     matic: {
       url: "https://rpc-mainnet.maticvigil.com/",
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
     },
     rinkebyArbitrum: {
       url: "https://rinkeby.arbitrum.io/rpc",
       gasPrice: 30000000, // 0.03 gwei
       gas: 30_000_000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
       companionNetworks: {
         l1: "rinkeby",
       },
@@ -140,9 +134,7 @@ const config: HardhatUserConfig = {
     localArbitrum: {
       url: "http://localhost:8547",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
       companionNetworks: {
         l1: "localArbitrumL1",
       },
@@ -150,9 +142,7 @@ const config: HardhatUserConfig = {
     localArbitrumL1: {
       url: "http://localhost:7545",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
       companionNetworks: {
         l2: "localArbitrum",
       },
@@ -160,9 +150,7 @@ const config: HardhatUserConfig = {
     kovanOptimism: {
       url: "https://kovan.optimism.io",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
       ovm: true,
       companionNetworks: {
         l1: "kovan",
@@ -171,9 +159,7 @@ const config: HardhatUserConfig = {
     localOptimism: {
       url: "http://localhost:8545",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
       ovm: true,
       companionNetworks: {
         l1: "localOptimismL1",
@@ -182,9 +168,7 @@ const config: HardhatUserConfig = {
     localOptimismL1: {
       url: "http://localhost:9545",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
       companionNetworks: {
         l2: "localOptimism",
       },
@@ -193,25 +177,19 @@ const config: HardhatUserConfig = {
       url: "http://localhost:9650/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43112,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
     },
     fujiAvalanche: {
       url: "https://api.avax-test.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43113,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
     },
     mainnetAvalanche: {
       url: "https://api.avax.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43114,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts,
     },
   },
   solidity: {

@@ -10,6 +10,7 @@ import {
   impliedVolAtom,
   indexAtom,
   normFactorAtom,
+  osqthRefVolAtom,
 } from './atoms'
 import { fromTokenAmount, toTokenAmount } from '@utils/calculations'
 import { useHandleTransaction } from '../wallet/hooks'
@@ -23,6 +24,7 @@ import {
   getDailyHistoricalFunding,
   getIndex,
   getMark,
+  getOsqthRefVol,
 } from './utils'
 import { useGetETHandOSQTHAmount } from '../nftmanager/hooks'
 import { controllerContractAtom } from '../contracts/atoms'
@@ -257,7 +259,7 @@ export const useGetCollatRatioAndLiqPrice = () => {
         collateralPercent: 0,
         liquidationPrice: new BigNumber(0),
       }
-      if (!contract) return emptyState
+      if (!contract || !normFactor) return emptyState
 
       let effectiveCollat = collateralAmount
       let liquidationPrice = new BigNumber(0)
@@ -277,6 +279,8 @@ export const useGetCollatRatioAndLiqPrice = () => {
       const debt = await getDebtAmount(shortAmount)
 
       if (debt && !debt.isZero() && debt.isPositive()) {
+
+        
         const collateralPercent = Number(effectiveCollat.div(debt).times(100).toFixed(1))
         const rSqueeth = normFactor.multipliedBy(new BigNumber(shortAmount)).dividedBy(10000)
         if (!uniId) liquidationPrice = effectiveCollat.div(rSqueeth.multipliedBy(1.5))
@@ -378,7 +382,7 @@ const useIndex = () => {
         topics: [SWAP_EVENT_TOPIC],
       },
       () => {
-        getIndex(3, contract).then(setIndex)
+        getIndex(1, contract).then(setIndex)
       },
     )
 
@@ -450,10 +454,21 @@ const useMark = () => {
   return mark
 }
 
+const useOsqthRefVol =  async () : Promise<number> =>  {
+  const address = useAtomValue(addressAtom)
+  const networkId = useAtomValue(networkIdAtom)
+  const [OsqthRefVol, setOsqthRefVol] = useAtom(osqthRefVolAtom)
+  useEffect(() => {
+    getOsqthRefVol().then(setOsqthRefVol)
+  }, [address,networkId])
+  return OsqthRefVol
+}
+
 export const useInitController = () => {
   useIndex()
   useMark()
   useCurrentImpliedFunding()
   useDailyHistoricalFunding()
   useNormFactor()
+  useOsqthRefVol()
 }

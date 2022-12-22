@@ -1,8 +1,8 @@
 import { PrimaryButton } from '@components/Button'
 import { PrimaryInput } from '@components/Input/PrimaryInput'
 import { SecondaryTabs, SecondaryTab } from '@components/Tabs'
-import Confirmed, { ConfirmType } from '@components/Trade/Confirmed'
-import TradeInfoItem from '@components/Trade/TradeInfoItem'
+import Confirmed, { ConfirmType } from '@components/TradeOld/Confirmed'
+import TradeInfoItem from '@components/TradeOld/TradeInfoItem'
 import { TradeSettings } from '@components/TradeSettings'
 import { useRestrictUser } from '@context/restrict-user'
 import RestrictionInfo from '@components/RestrictionInfo'
@@ -147,7 +147,7 @@ const CrabTrade: React.FC<CrabTradeType> = ({ maxCap, depositedAmount }) => {
         withdrawError = 'Deposits and withdraws available after the hedge auction'
       }
       if (currentImpliedFunding <= 0.75 * dailyHistoricalFunding.funding) {
-        warning = `Current implied funding is 75% lower than the last ${dailyHistoricalFunding.period} hours. Consider if you want to deposit now or later`
+        warning = `Current implied premiums is 75% lower than the last ${dailyHistoricalFunding.period} hours. Consider if you want to deposit now or later`
       }
     }
 
@@ -264,11 +264,7 @@ const CrabTrade: React.FC<CrabTradeType> = ({ maxCap, depositedAmount }) => {
           ) : null}
           {depositOption === 0 ? null : (
             <div className={classes.settingsButton}>
-              <TradeSettings
-                isCrab={true}
-                setCrabSlippage={(s) => setSlippage(s.toNumber())}
-                crabSlippage={new BigNumber(slippage)}
-              />
+              <TradeSettings setSlippage={(amt) => setSlippage(amt.toNumber())} slippage={new BigNumber(slippage)} />
             </div>
           )}
           <div className={classes.tradeContainer}>

@@ -20,6 +20,14 @@ import {
   CRAB_MIGRATION,
   CRAB_STRATEGY2,
   CONTROLLER_HELPER,
+  CRAB_HELPER,
+  CRAB_NETTING,
+  FLASH_BULL_STRATEGY,
+  BULL_STRATEGY,
+  WETH_E_TOKEN,
+  AUCTION_BULL,
+  EULER_SIMPLE_LENS,
+  USDC_D_TOKEN,
 } from '@constants/address'
 import { networkIdAtom, web3Atom } from '../wallet/atoms'
 import { BIG_ZERO } from '@constants/index'
@@ -58,6 +66,14 @@ export const addressesAtom = atom((get) => {
     crabMigration: CRAB_MIGRATION[networkId].toLowerCase(),
     crabStrategy2: CRAB_STRATEGY2[networkId].toLowerCase(),
     controllerHelper: CONTROLLER_HELPER[networkId].toLowerCase(),
+    crabHelper: CRAB_HELPER[networkId].toLowerCase(),
+    crabNetting: CRAB_NETTING[networkId].toLowerCase(),
+    flashBull: FLASH_BULL_STRATEGY[networkId].toLowerCase(),
+    bullStrategy: BULL_STRATEGY[networkId].toLowerCase(),
+    wethEToken: WETH_E_TOKEN[networkId].toLowerCase(),
+    auctionBull: AUCTION_BULL[networkId].toLowerCase(),
+    eulerSimpleLens: EULER_SIMPLE_LENS[networkId].toLowerCase(),
+    usdcDToken: USDC_D_TOKEN[networkId].toLowerCase(),
   }
 })
 

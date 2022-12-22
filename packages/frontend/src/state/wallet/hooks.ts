@@ -27,12 +27,16 @@ import { useApolloClient } from '@apollo/client'
 import useAppCallback from '@hooks/useAppCallback'
 import useAppEffect from '@hooks/useAppEffect'
 import { checkIsValidAddress } from './apis'
+import { setUserId } from '@amplitude/analytics-browser'
+import { WALLET_EVENTS } from '@utils/amplitude'
+import useAmplitude from '@hooks/useAmplitude'
 
 export const useSelectWallet = () => {
   const [onboard] = useAtom(onboardAtom)
   const setAddress = useUpdateAtom(addressAtom)
   const onboardAddress = useAtomValue(onboardAddressAtom)
   const setWalletFailVisible = useUpdateAtom(walletFailVisibleAtom)
+  const { track } = useAmplitude()
 
   const onWalletSelect = async () => {
     if (!onboard) return
@@ -43,6 +47,9 @@ export const useSelectWallet = () => {
           checkIsValidAddress(onboardAddress).then((valid) => {
             if (valid) {
               setAddress(onboardAddress)
+              // Analytics
+              setUserId(onboardAddress)
+              track(WALLET_EVENTS.WALLET_CONNECTED, { address: onboardAddress })
             } else {
               setWalletFailVisible(true)
             }
@@ -85,7 +92,7 @@ export const useHandleTransaction = () => {
   const setTransactionData = useUpdateAtom(transactionDataAtom)
 
   const handleTransaction = useCallback(
-    (tx: any, onTxConfirmed?: () => void) => {
+    (tx: any, onTxConfirmed?: (id?: string) => void) => {
       if (!notify) return
       tx.on('transactionHash', (hash: string) => {
         const { emitter } = notify.hash(hash)
@@ -98,7 +105,7 @@ export const useHandleTransaction = () => {
 
           if (transaction.status === 'confirmed') {
             if (onTxConfirmed) {
-              onTxConfirmed()
+              onTxConfirmed(hash)
             }
             refetch()
           }

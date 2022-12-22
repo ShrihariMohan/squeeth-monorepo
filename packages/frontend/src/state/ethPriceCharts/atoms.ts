@@ -20,6 +20,8 @@ import useAppCallback from '@hooks/useAppCallback'
 import { useMemo } from 'react'
 
 const FIVE_MINUTES_IN_MILLISECONDS = 300_000
+const STRATEGIES_LAUNCH_TIME_STAMP = 1642636810000
+
 const ethPriceChartsQueryKeys = {
   ethPriceRange: (days: number) => ['ethPriceRange', { days }],
   allEthPricesRange: (days: number) => ['allEthPricesRange', { days }],
@@ -37,7 +39,7 @@ const ethPriceChartsQueryKeys = {
   ethPNLCompounding: (ethPrices: any) => ['ethPNLCompounding', { ethPricesData: ethPrices }],
 }
 
-export const daysAtom = atom(365)
+export const daysAtom = atom(7)
 export const collatRatioAtom = atom(1.5)
 export const volMultiplierAtom = atom(1.2)
 
@@ -55,6 +57,15 @@ export const useAllEthPrices = () => {
 
   return useQuery(ethPriceChartsQueryKeys.allEthPricesRange(days), () => getETHPrices(days), {
     enabled: Boolean(days),
+    staleTime: FIVE_MINUTES_IN_MILLISECONDS,
+  })
+}
+
+export const useEthPricesSinceStrategiesLaunch = () => {
+  const startTimestampInMilli =  STRATEGIES_LAUNCH_TIME_STAMP
+  const currentTime =  new Date(Date.now())
+  const days = Math.floor((currentTime.getTime() - startTimestampInMilli) / (1000 * 3600 * 24))
+  return useQuery(ethPriceChartsQueryKeys.allEthPricesRange(days), () => getETHPrices(days), {
     staleTime: FIVE_MINUTES_IN_MILLISECONDS,
   })
 }
@@ -252,36 +263,58 @@ export const useSqueethPrices = () => {
 export const useEthPriceMap = () => {
   const allEthPrices = useAllEthPrices()
 
-  return (
-    allEthPrices.data &&
-    allEthPrices.data.reduce((acc, p) => {
-      acc[p.time] = p.value
-      return acc
-    }, {} as Record<string, number>)
+  return useMemo(
+    () =>
+      allEthPrices.data &&
+      allEthPrices.data.reduce((acc, p) => {
+        acc[p.time] = p.value
+        return acc
+      }, {} as Record<string, number>),
+    [allEthPrices.data],
+  )
+}
+
+export const useEthPricesSinceStrategiesLaunchMap = () => {
+  const ethPrices = useEthPricesSinceStrategiesLaunch()
+
+  return useMemo(
+    () =>
+    ethPrices.data &&
+    ethPrices.data.reduce((acc, p) => {
+        acc[p.time] = p.value
+        return acc
+      }, {} as Record<string, number>),
+    [ethPrices.data],
   )
 }
 
 export const useEth90daysPriceMap = () => {
   const allEth90daysPrices = useAllEth90daysPrices()
 
-  return (
-    allEth90daysPrices.data &&
-    allEth90daysPrices.data.reduce((acc, p) => {
-      acc[p.time] = p.value
-      return acc
-    }, {} as Record<string, number>)
+  return useMemo(
+    () =>
+      allEth90daysPrices.data &&
+      allEth90daysPrices.data.reduce((acc, p) => {
+        acc[p.time] = p.value
+        return acc
+      }, {} as Record<string, number>),
+    [allEth90daysPrices.data],
   )
 }
 
 export const useEthWithinOneDayPriceMap = () => {
   const allEthWithinOneDayPrices = useAllEthWithinOneDayPrices()
 
-  return allEthWithinOneDayPrices.data
-    ? allEthWithinOneDayPrices.data.reduce((acc: any, p) => {
-        acc[p.time] = p.value
-        return acc
-      }, {})
-    : {}
+  return useMemo(
+    () =>
+      allEthWithinOneDayPrices.data
+        ? allEthWithinOneDayPrices.data.reduce((acc: any, p) => {
+            acc[p.time] = p.value
+            return acc
+          }, {})
+        : {},
+    [allEthWithinOneDayPrices.data],
+  )
 }
 
 export const useGetVaultPNLWithRebalance = () => {
@@ -410,24 +443,3 @@ export const useLongChartData = () => {
     },
   )
 }
-
-export const useCrabPnLV2ChartData = () => {
-
-
-  return useQuery(
-    ['pnlChart', ],
-    async () => getCrabPnlV2ChartData(),
-    {
-      staleTime: Infinity,
-      refetchOnWindowFocus: true,
-    },
-  )
-}
-
-export const crabV2DaysAtom = atom(getCrabStartDate())
-
-function getCrabStartDate() {
-  return 30;
-}
-
-

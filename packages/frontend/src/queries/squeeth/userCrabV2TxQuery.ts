@@ -5,7 +5,10 @@ export const USER_CRAB_V2_TX_QUERY = gql`
     crabUserTxes(
       orderBy: timestamp
       orderDirection: $orderDirection
-      where: { owner: $ownerId, type_in: ["FLASH_DEPOSIT", "FLASH_WITHDRAW", "DEPOSIT", "WITHDRAW", "DEPOSIT_V1"] }
+      where: {
+        owner: $ownerId
+        type_in: ["FLASH_DEPOSIT", "FLASH_WITHDRAW", "DEPOSIT", "WITHDRAW", "DEPOSIT_V1", "OTC_DEPOSIT", "OTC_WITHDRAW"]
+      }
     ) {
       id
       type
@@ -13,6 +16,10 @@ export const USER_CRAB_V2_TX_QUERY = gql`
       wSqueethAmount
       lpAmount
       timestamp
+      excessEth
+      erc20Token
+      erc20Amount
+      transaction
     }
   }
 `

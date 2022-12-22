@@ -11,7 +11,7 @@ import LPMintChart from '@components/Charts/LPMintChart'
 import Nav from '@components/Nav'
 import { LPProvider } from '@context/lp'
 import { useRestrictUser } from '@context/restrict-user'
-import { SqueethTab, SqueethTabs } from '@components/Tabs'
+import { SqueethTabNew, SqueethTabsNew } from '@components/Tabs'
 import { useETHPrice } from '@hooks/useETHPrice'
 import { supportedNetworkAtom } from 'src/state/wallet/atoms'
 import { useAtomValue } from 'jotai'
@@ -104,7 +104,7 @@ export function LPCalculator() {
           <SqueethInfo />
           <div className={classes.details}>
             <div style={{ display: 'flex' }}>
-              <SqueethTabs
+              <SqueethTabsNew
                 style={{ background: 'transparent' }}
                 className={classes.chartNav}
                 value={lpType}
@@ -113,9 +113,9 @@ export function LPCalculator() {
                 scrollButtons="auto"
                 variant="scrollable"
               >
-                <SqueethTab label={'Buy and LP'} />
-                <SqueethTab label="Mint and LP" />
-              </SqueethTabs>
+                <SqueethTabNew label="Buy and LP" style={{ width: '140px' }} />
+                <SqueethTabNew label="Mint and LP" style={{ width: '140px' }} />
+              </SqueethTabsNew>
             </div>
             {lpType === 0 ? (
               <div style={{ marginTop: '16px' }}>
@@ -130,7 +130,7 @@ export function LPCalculator() {
                 </Typography>
                 <Typography>
                   Buying and LPing gives you a leverage position with a payoff similar to ETH<sup>1.5</sup>. You give up
-                  some of your squeeth upside in exchange for trading fees. You are paying funding for being long
+                  some of your squeeth upside in exchange for trading fees. You are paying daily premiums for being long
                   squeeth, but earning fees from LPing on Uniswap.
                 </Typography>
                 <Typography className={classes.heading} variant="subtitle1" color="primary">
@@ -138,15 +138,15 @@ export function LPCalculator() {
                 </Typography>
                 <LPBuyChart ethPrice={ethPrice.toNumber()} />
                 <Typography variant="caption" color="textSecondary">
-                  This payoff diagram does not included funding or trading fees and assumes implied volatility stays
+                  This payoff diagram does not include premiums or trading fees and assumes implied volatility stays
                   constant.{' '}
                 </Typography>
                 <Typography className={classes.heading} variant="subtitle1" color="primary">
                   Risks
                 </Typography>
                 <Typography variant="body1">
-                  You are exposed to squeeth funding, so if you hold the position for a long period of time without
-                  upward price movements in ETH, you can lose considerable funds to funding payments.
+                  You are exposed to squeeth premiums, so if you hold the position for a long period of time without
+                  upward price movements in ETH, you can lose considerable funds to premium payments.
                 </Typography>
                 <br />
                 <Typography variant="body1">
@@ -174,14 +174,14 @@ export function LPCalculator() {
                 </Typography>
                 <LPMintChart ethPrice={ethPrice.toNumber()} />
                 <Typography variant="caption" color="textSecondary">
-                  This payoff diagram does not included funding or trading fees and assumes implied volatility stays
+                  This payoff diagram does not included premiums or trading fees and assumes implied volatility stays
                   constant.{' '}
                 </Typography>
                 <Typography className={classes.heading} variant="subtitle1" color="primary">
                   Risks
                 </Typography>
                 <Typography variant="body1">
-                  You enter this position neutral to squeeth exposure, but could end up long squeeth exposed to funding
+                  You enter this position neutral to squeeth exposure, but could end up long squeeth exposed to premiums
                   or short squeeth depending on ETH price movements. If you fall below the minimum collateralization
                   threshold (150%), you are at risk of liquidation.
                 </Typography>

@@ -12,6 +12,13 @@ import uniABI from '../../abis/uniswapPool.json'
 import shortAbi from '../../abis/shortHelper.json'
 import crabMigrationAbi from '../../abis/crabMigration.json'
 import quoterAbi from '../../abis/quoter.json'
+import crabHelperAbi from '../../abis/crabHelper.json'
+import crabNettingAbi from '../../abis/crabNetting.json'
+import flashBullAbi from '../../abis/flashBullStrategy.json'
+import bullStrategyAbi from '../../abis/bullStrategy.json'
+import eTokenAbi from '../../abis/eulerEToken.json'
+import auctionBullAbi from '../../abis/auctionBull.json'
+import eulerSimpleLensAbi from '../../abis/eulerSimpleLens.json'
 import { addressesAtom } from '../positions/atoms'
 import { web3Atom } from '../wallet/atoms'
 
@@ -29,7 +36,7 @@ export const crabStrategyContractAtom = atom<Contract | null>((get) => {
   return getContract(web3, crabStrategy, crabStrategyAbi)
 })
 
-export const crabStrategyContractAtomV2  = atom<Contract | null>((get) => {
+export const crabStrategyContractAtomV2 = atom<Contract | null>((get) => {
   const web3 = get(web3Atom)
   const { crabStrategy2 } = get(addressesAtom)
   if (!web3) return null
@@ -90,4 +97,53 @@ export const controllerHelperHelperContractAtom = atom<Contract | null>((get) =>
   const { controllerHelper } = get(addressesAtom)
   if (!web3) return null
   return getContract(web3, controllerHelper, controllerHelperAbi)
+})
+
+export const crabHelperContractAtom = atom<Contract | null>((get) => {
+  const web3 = get(web3Atom)
+  const { crabHelper } = get(addressesAtom)
+  if (!web3) return null
+  return getContract(web3, crabHelper, crabHelperAbi)
+})
+
+export const crabNettingContractAtom = atom<Contract | null>((get) => {
+  const web3 = get(web3Atom)
+  const { crabNetting } = get(addressesAtom)
+  if (!web3) return null
+  return getContract(web3, crabNetting, crabNettingAbi)
+})
+
+export const flashBullContractAtom = atom<Contract | null>((get) => {
+  const web3 = get(web3Atom)
+  const { flashBull } = get(addressesAtom)
+  if (!web3) return null
+  return getContract(web3, flashBull, flashBullAbi)
+})
+
+export const bullStrategyContractAtom = atom<Contract | null>((get) => {
+  const web3 = get(web3Atom)
+  const { bullStrategy } = get(addressesAtom)
+  if (!web3) return null
+  return getContract(web3, bullStrategy, bullStrategyAbi)
+})
+
+export const wethETokenContractAtom = atom<Contract | null>((get) => {
+  const web3 = get(web3Atom)
+  const { wethEToken } = get(addressesAtom)
+  if (!web3) return null
+  return getContract(web3, wethEToken, eTokenAbi)
+})
+
+export const auctionBullContractAtom = atom<Contract | null>((get) => {
+  const web3 = get(web3Atom)
+  const { auctionBull } = get(addressesAtom)
+  if (!web3) return null
+  return getContract(web3, auctionBull, auctionBullAbi)
+})
+
+export const eulerLensContractAtom = atom<Contract | null>((get) => {
+  const web3 = get(web3Atom)
+  const { eulerSimpleLens } = get(addressesAtom)
+  if (!web3) return null
+  return getContract(web3, eulerSimpleLens, eulerSimpleLensAbi)
 })

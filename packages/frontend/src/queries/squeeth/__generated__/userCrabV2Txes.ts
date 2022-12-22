@@ -15,6 +15,10 @@ export interface userCrabV2Txes_crabUserTxes {
   wSqueethAmount: any | null;
   lpAmount: any | null;
   timestamp: any;
+  excessEth: any | null;
+  erc20Token: string | null;
+  erc20Amount: any | null;
+  transaction: string;
 }
 
 export interface userCrabV2Txes {

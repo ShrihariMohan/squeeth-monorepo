@@ -10,7 +10,6 @@ import React, { memo, useEffect, useMemo, useRef } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { useAtomValue } from 'jotai'
-
 import { RestrictUserProvider } from '@context/restrict-user'
 import getTheme, { Mode } from '../src/theme'
 import { uniswapClient } from '@utils/apollo-client'
@@ -26,6 +25,14 @@ import WalletFailModal from '@components/WalletFailModal'
 import { checkIsValidAddress } from 'src/state/wallet/apis'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import '@utils/amplitude'
+import { setUserId } from '@amplitude/analytics-browser'
+import { WALLET_EVENTS, initializeAmplitude } from '@utils/amplitude'
+import useAmplitude from '@hooks/useAmplitude'
+import CookiePopUp from '@components/CookiePopUp'
+import StrategyLayout from '@components/StrategyLayout/StrategyLayout'
+
+initializeAmplitude()
 
 TimeAgo.addDefaultLocale(en)
 const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } })
@@ -34,6 +41,7 @@ function MyApp({ Component, pageProps }: any) {
   useRenderCounter('9', '0')
 
   const router = useRouter()
+  const { track } = useAmplitude()
   const networkId = useAtomValue(networkIdAtom)
   const client = useMemo(() => uniswapClient[networkId] || uniswapClient[1], [networkId])
 
@@ -69,6 +77,19 @@ function MyApp({ Component, pageProps }: any) {
     }
   }, [router.events, siteID])
 
+  useEffect(() => {
+    function onRouteChangeComplete(url: string) {
+      const e: string = url.split('?')[0].substring(1).toUpperCase()
+      track('NAV_' + e)
+    }
+    router.events.on('routeChangeComplete', onRouteChangeComplete)
+
+    return () => {
+      router.events.off('routeChangeComplete', onRouteChangeComplete)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [track])
+
   return (
     <RestrictUserProvider>
       <QueryClientProvider client={queryClient}>
@@ -86,6 +107,7 @@ const Init = () => {
   const onboardAddress = useAtomValue(onboardAddressAtom)
   const setWalletFailVisible = useUpdateAtom(walletFailVisibleAtom)
   const firstAddressCheck = useRef(true)
+  const { track } = useAmplitude()
 
   useAppEffect(() => {
     if (!onboardAddress) {
@@ -95,6 +117,8 @@ const Init = () => {
     checkIsValidAddress(onboardAddress).then((valid) => {
       if (valid) {
         setAddress(onboardAddress)
+        setUserId(onboardAddress)
+        track(WALLET_EVENTS.WALLET_CONNECTED, { address: onboardAddress })
       } else {
         if (firstAddressCheck.current) {
           firstAddressCheck.current = false
@@ -103,7 +127,7 @@ const Init = () => {
         }
       }
     })
-  }, [onboardAddress, setAddress, setWalletFailVisible])
+  }, [onboardAddress, setAddress, setWalletFailVisible, track])
 
   useOnboard()
   useUpdateSqueethPrices()
@@ -129,20 +153,23 @@ const TradeApp = ({ Component, pageProps }: any) => {
           name="twitter:description"
           content="Squeeth is a new financial primitive in DeFi that gives traders exposure to ETH²"
         />
-        <meta name="twitter:image" content="https://squeeth.opyn.co/images/SqueethLogoMedium.png" />
+        <meta name="twitter:image" content="https://squeeth.opyn.co/images/SqueethLogoMetadata-WhiteBg.png" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
 
       <MemoizedInit />
-      <ThemeProvider theme={getTheme(Mode.DARK)}>
+      <ThemeProvider theme={getTheme(Mode.NEW_DARK)}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <ComputeSwapsProvider>
           <WalletFailModal />
-          <Component {...pageProps} />
+          <StrategyLayout>
+            <Component {...pageProps} />
+          </StrategyLayout>
         </ComputeSwapsProvider>
       </ThemeProvider>
+      <CookiePopUp />
     </React.Fragment>
   )
 }
